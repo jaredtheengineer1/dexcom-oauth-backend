@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 export const generatePKCE = () => {
-  const verifier = crypto.randomBypes(32).toString("base64url");
+  const verifier = crypto.randomBytes(32).toString("base64url");
   const challenge = crypto
     .createHash("sha256")
     .update(verifier)
