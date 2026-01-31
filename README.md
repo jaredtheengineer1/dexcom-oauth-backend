@@ -72,6 +72,7 @@ DEXCOM_TOKEN_URL=https://sandbox-api.dexcom.com/v2/oauth2/token
 DEXCOM_REDIRECT_URI=http://localhost:3000 #whatever your redirect url is
 DEXCOM_EGV_URL=https://sandbox-api.dexcom.com/v3/users/self/egvs";
 KV_ENCRYPTION_KEY=your_kv_encryption_key
+APP_SCHEME=dexcomgmi
 ```
 
 Need to create a kv encryption key?
