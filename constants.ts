@@ -10,6 +10,8 @@ const GMI_INTERCEPT = 3.31; // base GMI when avg glucose is 0 mg/dL
 const GMI_SLOPE = 0.02392; // %A1C per mg/dL
 const WINDOW_SECONDS = 60;
 const MAX_REQUESTS = 30;
+const ALGO = 'aes-256-gcm';
+const IV_LENGTH = 12;
 
 export {
   EXPECTED_EGVS_PER_DAY,
@@ -24,4 +26,6 @@ export {
   GMI_SLOPE,
   WINDOW_SECONDS,
   MAX_REQUESTS,
+  ALGO,
+  IV_LENGTH,
 };

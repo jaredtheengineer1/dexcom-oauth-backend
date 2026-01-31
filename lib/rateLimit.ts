@@ -1,9 +1,11 @@
-import { kv } from "@vercel/kv";
-import { WINDOW_SECONDS, MAX_REQUESTS } from "../constants";
+import { kv } from '@vercel/kv';
+import { WINDOW_SECONDS, MAX_REQUESTS } from '../constants';
+import { RateLimitResult } from '../types';
 
-const rateLimit = async (key: string) => {
+const rateLimit = async (key: string): Promise<RateLimitResult> => {
   const now = Math.floor(Date.now() / 1000);
-  const windowKey = `rate:${key}:${Math.floor(now / WINDOW_SECONDS)}`;
+  const window = Math.floor(now / WINDOW_SECONDS);
+  const windowKey = `rate:${key}:${window}`;
 
   const count = await kv.incr(windowKey);
 
@@ -12,11 +14,18 @@ const rateLimit = async (key: string) => {
     await kv.expire(windowKey, WINDOW_SECONDS);
   }
 
+  const remaining = Math.max(0, MAX_REQUESTS - count);
+  const resetIn = WINDOW_SECONDS - (now % WINDOW_SECONDS);
+
   if (count > MAX_REQUESTS) {
-    const err = new Error("RATE_LIMITED");
-    (err as any).code = "RATE_LIMITED";
+    const err: any = new Error('RATE_LIMITED');
+    err.code = 'RATE_LIMITED';
+    err.retryAfter = resetIn;
+    err.remaining = remaining;
     throw err;
   }
+
+  return { remaining, resetIn };
 };
 
 export { rateLimit };

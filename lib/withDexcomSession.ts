@@ -14,7 +14,8 @@ const withDexcomSession = async (
   }
   const sessionId = auth.replace('Bearer ', '');
 
-  await rateLimit(sessionId);
+  const { remaining, resetIn } = await rateLimit(sessionId);
+
   const { start, end } = req.query;
   if (!start || !end) {
     const err = new Error('Missing date range');
@@ -43,6 +44,10 @@ const withDexcomSession = async (
     sessionId: newSessionId,
     start: startDate,
     end: endDate,
+    rateLimit: {
+      remaining,
+      resetIn,
+    },
   };
 };
 

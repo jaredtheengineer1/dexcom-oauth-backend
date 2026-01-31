@@ -1,18 +1,34 @@
-import axios from "axios";
-import { kv } from "@vercel/kv";
-import { DexcomSession, ValidDexcomSession } from "../types";
-import { THIRTY_DAYS_SECONDS, REFRESH_BUFFER_MS } from "../constants";
+import axios from 'axios';
+import { kv } from '@vercel/kv';
+import { DexcomSession, ValidDexcomSession } from '../types';
+import { THIRTY_DAYS_SECONDS, REFRESH_BUFFER_MS } from '../constants';
+import { encrypt, decrypt } from './crypto';
+
 const TTL = THIRTY_DAYS_SECONDS;
 
 export const getValidDexcomSession = async (
-  sessionId: string,
+  sessionId: string
 ): Promise<ValidDexcomSession> => {
   const key = `dexcom:${sessionId}`;
-  const session = await kv.get<DexcomSession>(key);
+  const encrypted = await kv.get<any>(key);
+
+  if (!encrypted) {
+    const err = new Error('SESSION_EXPIRED');
+    (err as any).code = 'SESSION_EXPIRED';
+    throw err;
+  }
+  let session: DexcomSession;
+  try {
+    session = await decrypt<DexcomSession>(encrypted);
+  } catch {
+    const err = new Error('SESSION_EXPIRED');
+    (err as any).code = 'SESSION_EXPIRED';
+    throw err;
+  }
 
   if (!session) {
-    const err = new Error("SESSION_NOT_FOUND");
-    (err as any).code = "SESSION_NOT_FOUND";
+    const err = new Error('SESSION_NOT_FOUND');
+    (err as any).code = 'SESSION_NOT_FOUND';
     throw err;
   }
 
@@ -27,18 +43,18 @@ export const getValidDexcomSession = async (
     .post(
       process.env.DEXCOM_TOKEN_URL!,
       new URLSearchParams({
-        grant_type: "refresh_token",
+        grant_type: 'refresh_token',
         refresh_token: session.refreshToken,
         client_id: process.env.DEXCOM_CLIENT_ID!,
         client_secret: process.env.DEXCOM_CLIENT_SECRET!,
       }),
       {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      }
     )
     .catch((e) => {
-      const err = new Error("TOKEN_REFRESH_FAILED");
-      (err as any).code = "TOKEN_REFRESH_FAILED";
+      const err = new Error('TOKEN_REFRESH_FAILED');
+      (err as any).code = 'TOKEN_REFRESH_FAILED';
       throw err;
     });
 
@@ -50,7 +66,7 @@ export const getValidDexcomSession = async (
 
   const newSessionId = crypto.randomUUID();
 
-  await kv.set(`dexcom:${newSessionId}`, updated, { ex: TTL });
+  await kv.set(`dexcom:${newSessionId}`, encrypt(updated), { ex: TTL });
   await kv.del(key);
   return { accessToken: updated.accessToken, sessionId: newSessionId };
 };

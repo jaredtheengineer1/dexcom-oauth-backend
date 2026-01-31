@@ -10,12 +10,12 @@ interface ValidDexcomSession {
 }
 
 type ApiErrorCode =
-  | "SESSION_NOT_FOUND"
-  | "SESSION_EXPIRED"
-  | "TOKEN_REFRESH_FAILED"
-  | "RATE_LIMITED"
-  | "INVALID_DATE_RANGE"
-  | "DEXCOM_ERROR";
+  | 'SESSION_NOT_FOUND'
+  | 'SESSION_EXPIRED'
+  | 'TOKEN_REFRESH_FAILED'
+  | 'RATE_LIMITED'
+  | 'INVALID_DATE_RANGE'
+  | 'DEXCOM_ERROR';
 
 interface GlucoseSummary {
   estimatedA1c: number | null;
@@ -35,8 +35,19 @@ interface DexcomRequestContext {
   sessionId: string;
   start: Date;
   end: Date;
+  rateLimit: RateLimitResult;
 }
 
+interface RateLimitResult {
+  remaining: number;
+  resetIn: number; // seconds
+}
+
+type EncryptedPayload = {
+  iv: string;
+  tag: string;
+  data: string;
+};
 export {
   Egv,
   DexcomSession,
@@ -44,4 +55,6 @@ export {
   ApiErrorCode,
   GlucoseSummary,
   DexcomRequestContext,
+  RateLimitResult,
+  EncryptedPayload,
 };
