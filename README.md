@@ -33,12 +33,14 @@ This repository contains a backend service for handling OAuth authentication and
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd dexcom-oauth-backend
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
@@ -57,11 +59,33 @@ npx vercel dev
 
 This will start a local development server using Vercel.
 
+### Sample .env File
+
+Below is an example of the `.env` file required for this project:
+
+```
+DEXCOM_CLIENT_ID=your_dexcom_client_id
+DEXCOM_CLIENT_SECRET=your_dexom_secret
+# SANDBOX endpoints
+DEXCOM_AUTH_URL=https://sandbox-api.dexcom.com/v2/oauth2/login
+DEXCOM_TOKEN_URL=https://sandbox-api.dexcom.com/v2/oauth2/token
+DEXCOM_REDIRECT_URI=http://localhost:3000 #whatever your redirect url is
+DEXCOM_EGV_URL=https://sandbox-api.dexcom.com/v3/users/self/egvs";
+KV_ENCRYPTION_KEY=your_kv_encryption_key
+```
+
+Need to create a kv encryption key?
+
+```
+$ openssl rand -base64 32
+```
+
 ## Deployment
 
 To deploy the project to Vercel:
 
 1. Ensure you have the Vercel CLI installed:
+
    ```bash
    npm install -g vercel
    ```
@@ -74,11 +98,13 @@ To deploy the project to Vercel:
 ## Endpoints
 
 ### Authentication
+
 - `POST /api/auth/start`: Initiates the OAuth flow.
 - `GET /api/auth/callback`: Handles the OAuth callback.
 - `POST /api/auth/token`: Exchanges the authorization code for an access token.
 
 ### Data Retrieval
+
 - `GET /api/egvs`: Retrieves EGV (Estimated Glucose Value) data from the Dexcom API.
 
 ## License
