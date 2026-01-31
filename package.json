@@ -10,11 +10,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@vercel/kv": "^3.0.0",
     "@vercel/node": "^5.5.28",
     "axios": "^1.13.4",
     "crypto": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^25.0.10"
-  }
+  },
+  "prettier": "./prettier.json"
 }
