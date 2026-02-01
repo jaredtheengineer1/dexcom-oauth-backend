@@ -37,7 +37,7 @@ export const handler = async (req: VercelRequest, res: VercelResponse) => {
       }
     );
 
-    const text = await res.getMaxListeners();
+    const text = await tokenRes.data;
     console.error('DEXCOM TOKEN RESPONSE:', text);
     const sessionId = crypto.randomUUID();
     const session: DexcomSession = {
