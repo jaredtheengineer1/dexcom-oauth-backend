@@ -54,9 +54,11 @@ export const handler = async (req: VercelRequest, res: VercelResponse) => {
 
     res.redirect(redirect);
   } catch (err: any) {
-    console.error('TOKEN ERROR STATUS:', err.response?.status);
-    console.error('TOKEN ERROR DATA:', err.response?.data);
-    console.error('TOKEN ERROR HEADERS:', err.response?.headers);
+    console.error('TOKEN ERROR MESSAGE:', err.message);
+    console.error('TOKEN ERROR CODE:', err.code);
+    console.error('TOKEN ERROR CONFIG:', err.config);
+    console.error('TOKEN ERROR RESPONSE:', err.response?.data);
+    return res.status(500).send('Token exchange failed');
     res.status(500).send('Token exchange failed');
   }
 };
