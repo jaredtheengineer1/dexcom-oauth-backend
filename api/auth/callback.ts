@@ -29,7 +29,7 @@ export const handler = async (req: VercelRequest, res: VercelResponse) => {
         client_id: process.env.DEXCOM_CLIENT_ID!,
         client_secret: process.env.DEXCOM_CLIENT_SECRET!,
         code: code as string,
-        redirect_uri: `${process.env.DEXCOM_REDIRECT_URI}/api/auth/callback`,
+        redirect_uri: process.env.DEXCOM_REDIRECT_URI!,
         code_verifier: verifier,
       }),
       {
