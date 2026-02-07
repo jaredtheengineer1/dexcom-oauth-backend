@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { fetchEgvs } from '../lib/egvs';
+import { fetchEgvsRange } from '../lib/egvs';
 import { handleApiErrors } from '../lib/errors';
 import { withDexcomSession } from '../lib/withDexcomSession';
 import { DexcomRequestContext } from '../types';
@@ -9,7 +9,7 @@ export const handler = async (req: VercelRequest, res: VercelResponse) => {
   try {
     const ctx: DexcomRequestContext = await withDexcomSession(req);
 
-    const data = await fetchEgvs(ctx.accessToken, ctx.start, ctx.end);
+    const data = await fetchEgvsRange(ctx.accessToken, ctx.start, ctx.end);
     setHeaders(res, ctx);
     res.json(data);
   } catch (err: any) {
