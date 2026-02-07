@@ -4,6 +4,14 @@ import { WINDOW_MS } from '../constants';
 const toDexcomDate = (date: Date) =>
   date.toISOString().replace(/\.\d{3}Z$/, 'Z'); //.replace(/\.\d{3}Z$/, "");
 
+const startOfUtcDay = (d: Date) =>
+  new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+
+const endOfUtcDay = (d: Date) =>
+  new Date(
+    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 23, 59, 59)
+  );
+
 export const fetchEgvsRange = async (
   accessToken: string,
   start: Date,
@@ -13,17 +21,19 @@ export const fetchEgvsRange = async (
   let cursor = new Date(start);
 
   while (cursor < end) {
-    const windowEnd = new Date(
-      Math.min(cursor.getTime() + WINDOW_MS - 5000, end.getTime())
-    );
+    const dayStart = startOfUtcDay(cursor);
+    const dayEnd = endOfUtcDay(cursor);
 
-    if (windowEnd <= cursor) break;
-    // const next = new Date(cursor.getTime() + 24 * 60 * 60 * 1000);
+    const windowStart = cursor;
+    const windowEnd = new Date(Math.min(dayEnd.getTime(), end.getTime()));
 
-    const chunk = await fetchEgvs(accessToken, cursor, windowEnd);
+    if (windowEnd <= windowStart) break;
 
+    const chunk = await fetchEgvs(accessToken, windowStart, windowEnd);
     all.push(...chunk);
-    cursor = windowEnd;
+
+    // advance to next day boundary
+    cursor = new Date(dayEnd.getTime() + 1000);
   }
 
   return all;
