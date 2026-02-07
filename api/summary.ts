@@ -10,7 +10,11 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
   try {
     const ctx: DexcomRequestContext = await withDexcomSession(req);
 
-    const egvsData = await fetchEgvs(ctx.accessToken, ctx.start, ctx.end);
+    const egvsData = await fetchEgvs(
+      ctx.accessToken,
+      ctx.start as Date,
+      ctx.end as Date
+    );
 
     const data = summarizeEgvs(egvsData);
     setHeaders(res, ctx);

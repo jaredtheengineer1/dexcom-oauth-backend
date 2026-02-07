@@ -23,18 +23,21 @@ const withDexcomSession = async (
     throw err;
   }
 
-  const startDate = new Date(start as string);
-  const endDate = new Date(end as string);
+  const now = new Date();
+  const endDate = now.toISOString();
+  const startDate = new Date(
+    now.getTime() - 90 * 24 * 60 * 60 * 1000
+  ).toISOString();
 
-  if (
-    isNaN(startDate.getTime()) ||
-    isNaN(endDate.getTime()) ||
-    startDate >= endDate
-  ) {
-    const err = new Error('Invalid date range');
-    (err as any).code = 'INVALID_DATE_RANGE';
-    throw err;
-  }
+  // if (
+  //   isNaN(startDate.getTime()) ||
+  //   isNaN(endDate.getTime()) ||
+  //   startDate >= endDate
+  // ) {
+  //   const err = new Error('Invalid date range');
+  //   (err as any).code = 'INVALID_DATE_RANGE';
+  //   throw err;
+  // }
 
   const { accessToken, sessionId: newSessionId } =
     await getValidDexcomSession(sessionId);

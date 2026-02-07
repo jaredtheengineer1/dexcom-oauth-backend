@@ -33,8 +33,8 @@ interface Egv {
 interface DexcomRequestContext {
   accessToken: string;
   sessionId: string;
-  start: Date;
-  end: Date;
+  start: Date | string;
+  end: Date | string;
   rateLimit: RateLimitResult;
 }
 
