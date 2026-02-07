@@ -14,15 +14,16 @@ export const fetchEgvsRange = async (
 
   while (cursor < end) {
     const windowEnd = new Date(
-      Math.min(cursor.getTime() + WINDOW_MS, end.getTime())
+      Math.min(cursor.getTime() + WINDOW_MS - 5000, end.getTime())
     );
 
+    if (windowEnd <= cursor) break;
     // const next = new Date(cursor.getTime() + 24 * 60 * 60 * 1000);
 
     const chunk = await fetchEgvs(accessToken, cursor, windowEnd);
 
     all.push(...chunk);
-    cursor = new Date(windowEnd.getTime() + 1000);
+    cursor = windowEnd;
   }
 
   return all;
