@@ -35,7 +35,7 @@ const decrypt = <T>(payload: EncryptedPayload): T => {
     decipher.final(),
   ]);
 
-  return JSON.parse(decrypted.toString('base64'));
+  return JSON.parse(decrypted.toString('utf8'));
 };
 
 export { encrypt, decrypt };
