@@ -1,6 +1,24 @@
 import axios from 'axios';
 import { WINDOW_MS } from '../constants';
 
+/**
+ * 
+ * Dexcom Date Rules
+ * 
+ * For /v3/users/self/egvs, Dexcom is very strict:
+
+    startDate must be before endDate
+
+    Range cannot exceed Dexcom’s allowed window
+
+    Sandbox is especially strict
+
+    Dates must be ISO 8601 and aligned to available data
+
+    Sandbox often has data only for specific historical windows
+
+
+ */
 const toDexcomDate = (date: Date) =>
   date.toISOString().replace(/\.\d{3}Z$/, 'Z'); //.replace(/\.\d{3}Z$/, "");
 
@@ -44,9 +62,20 @@ export const fetchEgvs = async (
   start: Date,
   end: Date
 ) => {
+  // const params = {
+  //   startDate: toDexcomDate(start),
+  //   endDate: toDexcomDate(end),
+  // };
+
+  const end1 = new Date();
+  end1.setSeconds(0, 0);
+
+  const start1 = new Date(end);
+  start1.setHours(end.getHours() - 24);
+
   const params = {
-    startDate: toDexcomDate(start),
-    endDate: toDexcomDate(end),
+    startDate: toDexcomDate(start1),
+    endDate: toDexcomDate(end1),
   };
 
   const res = await axios.get(process.env.DEXCOM_EGV_URL!, {
