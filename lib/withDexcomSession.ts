@@ -48,7 +48,7 @@ const withDexcomSession = async (
 
   const now = new Date();
 
-  const endDate = now;
+  const endDate = new Date(now.getTime() - 5 * 60 * 1000);
   const startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
 
   const { accessToken, sessionId: newSessionId } =
