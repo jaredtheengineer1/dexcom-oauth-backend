@@ -32,7 +32,10 @@ export const getValidDexcomSession = async (
     throw err;
   }
 
-  if (Date.now() < session.accessTokenExpiresAt - REFRESH_BUFFER_MS) {
+  const expiresAt = session.accessTokenExpiresAt;
+  const now = Date.now();
+
+  if (expiresAt - now > REFRESH_BUFFER_MS) {
     return {
       accessToken: session.accessToken,
       sessionId: sessionId,

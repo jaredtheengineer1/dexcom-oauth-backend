@@ -4,6 +4,7 @@ import { decodeState } from '../../lib/state';
 import { kv } from '@vercel/kv';
 import { DexcomSession } from '../../types';
 import { FIVE_MINUTES, THIRTY_DAYS_SECONDS } from '../../constants';
+import { encrypt } from '../../lib/crypto';
 
 export const handler = async (req: VercelRequest, res: VercelResponse) => {
   const { code, state } = req.query;
@@ -21,7 +22,6 @@ export const handler = async (req: VercelRequest, res: VercelResponse) => {
   }
 
   try {
-    console.log('redirect uri: ', process.env.DEXCOM_REDIRECT_URI);
     const tokenRes = await axios.post(
       process.env.DEXCOM_TOKEN_URL!,
       new URLSearchParams({
@@ -37,8 +37,6 @@ export const handler = async (req: VercelRequest, res: VercelResponse) => {
       }
     );
 
-    const text = await tokenRes.data;
-    console.error('DEXCOM TOKEN RESPONSE:', text);
     const sessionId = crypto.randomUUID();
     const session: DexcomSession = {
       accessToken: tokenRes.data.access_token,
@@ -46,7 +44,7 @@ export const handler = async (req: VercelRequest, res: VercelResponse) => {
       accessTokenExpiresAt: Date.now() + tokenRes.data.expires_in * 1000,
     };
 
-    await kv.set<DexcomSession>(`dexcom:${sessionId}`, session, {
+    await kv.set(`dexcom:${sessionId}`, encrypt(session), {
       ex: THIRTY_DAYS_SECONDS,
     });
 

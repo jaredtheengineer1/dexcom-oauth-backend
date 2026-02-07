@@ -4,7 +4,6 @@ import { fetchEgvs } from '../lib/egvs';
 import { handleApiErrors } from '../lib/errors';
 import { DexcomRequestContext } from '../types';
 import { withDexcomSession } from '../lib/withDexcomSession';
-import { MAX_REQUESTS } from '../constants';
 import { setHeaders } from '../lib/setHeaders';
 
 const handler = async (req: VercelRequest, res: VercelResponse) => {
