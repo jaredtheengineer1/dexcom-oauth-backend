@@ -16,18 +16,15 @@ const withDexcomSession = async (
 
   const { remaining, resetIn } = await rateLimit(sessionId);
 
-  const { start, end } = req.query;
-  if (!start || !end) {
-    const err = new Error('Missing date range');
-    (err as any).code = 'INVALID_DATE_RANGE';
-    throw err;
-  }
+  // const { start, end } = req.query;
+  // if (!start || !end) {
+  //   const err = new Error('Missing date range');
+  //   (err as any).code = 'INVALID_DATE_RANGE';
+  //   throw err;
+  // }
 
-  const now = new Date();
-  const endDate = now.toISOString();
-  const startDate = new Date(
-    now.getTime() - 90 * 24 * 60 * 60 * 1000
-  ).toISOString();
+  // const startDate = new Date(start as string);
+  // const endDate = new Date(end as string);
 
   // if (
   //   isNaN(startDate.getTime()) ||
@@ -38,6 +35,21 @@ const withDexcomSession = async (
   //   (err as any).code = 'INVALID_DATE_RANGE';
   //   throw err;
   // }
+
+  // if (
+  //   isNaN(startDate.getTime()) ||
+  //   isNaN(endDate.getTime()) ||
+  //   startDate >= endDate
+  // ) {
+  //   const err = new Error('Invalid date range');
+  //   (err as any).code = 'INVALID_DATE_RANGE';
+  //   throw err;
+  // }
+
+  const now = new Date();
+
+  const endDate = now;
+  const startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
 
   const { accessToken, sessionId: newSessionId } =
     await getValidDexcomSession(sessionId);

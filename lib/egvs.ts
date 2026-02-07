@@ -1,14 +1,12 @@
-import axios from "axios";
+import axios from 'axios';
 
-const toDexcomDate = (date: Date) =>
-  date.toISOString().replace(/\.\d{3}Z$/, "");
+const toDexcomDate = (date: Date) => date.toISOString(); //.replace(/\.\d{3}Z$/, "");
 
 export const fetchEgvs = async (
   accessToken: string,
   start: Date,
-  end: Date,
+  end: Date
 ) => {
-  // DEXCOM rejects requests with timezone or milliseconds
   const params = {
     startDate: toDexcomDate(start),
     endDate: toDexcomDate(end),
