@@ -67,11 +67,8 @@ export const fetchEgvs = async (
   //   endDate: toDexcomDate(end),
   // };
 
-  const end1 = new Date();
-  end1.setSeconds(0, 0);
-
-  const start1 = new Date(end);
-  start1.setHours(end.getHours() - 24);
+  const start1 = new Date('2022-01-01T00:00:00Z');
+  const end1 = new Date('2022-01-02T00:00:00Z');
 
   const params = {
     startDate: toDexcomDate(start1),
