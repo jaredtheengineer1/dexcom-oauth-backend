@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { WINDOW_MS } from '../constants';
 
-const toDexcomDate = (date: Date) => date.toISOString(); //.replace(/\.\d{3}Z$/, "");
+const toDexcomDate = (date: Date) =>
+  date.toISOString().replace(/\.\d{3}Z$/, 'Z'); //.replace(/\.\d{3}Z$/, "");
 
 export const fetchEgvsRange = async (
   accessToken: string,
@@ -11,12 +13,16 @@ export const fetchEgvsRange = async (
   let cursor = new Date(start);
 
   while (cursor < end) {
-    const next = new Date(cursor.getTime() + 24 * 60 * 60 * 1000);
+    const windowEnd = new Date(
+      Math.min(cursor.getTime() + WINDOW_MS, end.getTime())
+    );
 
-    const chunk = await fetchEgvs(accessToken, cursor, next < end ? next : end);
+    // const next = new Date(cursor.getTime() + 24 * 60 * 60 * 1000);
+
+    const chunk = await fetchEgvs(accessToken, cursor, windowEnd);
 
     all.push(...chunk);
-    cursor = next;
+    cursor = new Date(windowEnd.getTime() + 1000);
   }
 
   return all;

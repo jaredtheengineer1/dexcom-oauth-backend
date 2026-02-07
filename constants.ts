@@ -12,6 +12,7 @@ const WINDOW_SECONDS = 60;
 const MAX_REQUESTS = 30;
 const ALGO = 'aes-256-gcm';
 const IV_LENGTH = 12;
+const WINDOW_MS = 23 * 60 * 60 * 1000 + 55 * 60 * 1000; // 23h 55m
 
 export {
   EXPECTED_EGVS_PER_DAY,
@@ -28,4 +29,5 @@ export {
   MAX_REQUESTS,
   ALGO,
   IV_LENGTH,
+  WINDOW_MS,
 };
